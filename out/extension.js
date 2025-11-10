@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const fs = require("fs");
+const post = require('./post').post;
+
+/** @param {vscode.ExtensionContext} context */
 function activate(context) {
     let disposable = vscode.commands.registerCommand('extension.convertClassNameRule', () => {
         let editor = vscode.window.activeTextEditor;
@@ -112,85 +115,47 @@ function activate(context) {
             edit.replace(selection, content);
         });
     });
-    context.subscriptions.push(disposable);
-    context.subscriptions.push(disposable2);
-    context.subscriptions.push(disposable3);
-    context.subscriptions.push(disposable4);
-    return {
-        extendMarkdownIt(md) {
-            let processSource = (src) => {
-                // console.log(src);
-                src = src.replace(/\\\[/g, 'tempTokenForChar91');
-                src = src.replace(/\n---\s*?\n/g, '\n<hr style="clear:both">\n');
-                return src;
-            };
-            let processResult = (result) => {
-                // tasklist
-                result = result.replace(/<li([^>]*)class="([^>]*)(>\s*<p data-line="\d+" class="code-line")?>\[(x|\ )\]\ /g, function (str) {
-                    return str.replace('>[ ] ', '><input type="checkbox" style="margin-left:-1.22em;margin-right:0.42em;" disabled>')
-                        .replace('>[x] ', '><input type="checkbox" style="margin-left:-1.22em;margin-right:0.42em;" disabled checked>')
-                        .replace('class="', 'style="list-style-type:none;" class="');
-                });
-                //classname
-                result = result.replace(/((?:\.[a-zA-Z_\-][a-zA-Z\-_0-9]*)+)\[/g, function (str) {
-                    return str.slice(0, -1) + 'temp_token_for_char_91_2';
-                });
-                result = result.replace(/\[/g, 'temp_token_for_char_91_1');
-                result = result.replace(/temp_token_for_char_91_2/g, '[');
-                let _span_replace = (str) => {
-                    let groups = str.split('[');
-                    let classname = groups[0].split('.').slice(1).join(' ');
-                    let tag = 'span';
-                    let content = '<' + tag + ' class="' + classname + '">' + groups[1].slice(0, -1) + '</' + tag + '>';
-                    return content;
-                };
-                let re_span = /((?:\.[a-zA-Z_\-][a-zA-Z\-_0-9]*)+)\[([^\[\]\n]*)\]/g;
-                let _result = result.replace(re_span, _span_replace);
-                while (_result != result) {
-                    result = _result;
-                    _result = result.replace(re_span, _span_replace);
+    // context.subscriptions.push(disposable);
+    // context.subscriptions.push(disposable2);
+    // context.subscriptions.push(disposable3);
+    // context.subscriptions.push(disposable4);
+    const submitCode = (code)=>{
+        post(
+            vscode.workspace.getConfiguration('vscode-klayout').targetUrl,
+            {
+                code: code
+            },
+            (data, err) => {
+                if (err) {
+                    console.error('HTTP请求失败:', err.message);
+                    return;
                 }
-                let re_div_g = /\n(<p data-line="\d+" class="code-line">)((?:\.[a-zA-Z_\-][a-zA-Z\-_0-9]*)+)\[((?:[^\[\]]|\](?!<\/p>))*)\]<\/p>\n/g;
-                let re_div = /\n(<p data-line="\d+" class="code-line">)((?:\.[a-zA-Z_\-][a-zA-Z\-_0-9]*)+)\[((?:[^\[\]]|\](?!<\/p>))*)\]<\/p>\n/;
-                //              1                                      2                                    3
-                let _div_replace = (str) => {
-                    let groups = str.match(re_div);
-                    let tag = 'div';
-                    let classname = groups[2].split('.').slice(1).join(' ');
-                    let content = '\n<' + tag + ' class="' + classname + '">\n' + groups[1] + groups[3] + '</p>\n</' + tag + '>\n';
-                    return content;
-                };
-                _result = result.replace(re_div_g, _div_replace);
-                while (_result != result) {
-                    result = _result;
-                    _result = result.replace(re_div_g, _div_replace);
-                }
-                result = result.replace(/temp_token_for_char_91_1/g, '[');
-                result = result.replace(/tempTokenForChar91/g, '[');
-                // console.log(result)
-                return result;
-            };
-            if (vscode.version > '1.21.99') {
-                const parse = md.parse;
-                md.parse = (src, env) => {
-                    return parse.call(md, processSource(src), env);
-                };
-                const rendererRender = md.renderer.render;
-                md.renderer.render = (tokens, options, env) => {
-                    return processResult(rendererRender.call(md.renderer, tokens, options, env));
-                };
+                console.log('HTTP请求成功!');
+                console.log('响应:', data);
+                if(data.output)console.log(data.output);
+                if(data.error)console.error(data.error);
             }
-            else {
-                const render = md.render;
-                md.render = (src, env) => {
-                    src = processSource(src);
-                    let result = render.call(md, src, env);
-                    return processResult(result);
-                };
-            }
-            return md;
-        }
+        );
     };
+    context.subscriptions.push(vscode.commands.registerCommand('extension.submitselectscript', () => {
+        let editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            return; // No open text editor
+        }
+        let selection = editor.selection;
+        if (selection.isEmpty) {
+            return;
+        }
+        let text = editor.document.getText(selection);
+        submitCode(text);
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('extension.submitcurrentfile', () => {
+        let editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            return; // No open text editor
+        }
+        let text = editor.document.getText();
+        submitCode(text);
+    }));
 }
 exports.activate = activate;
-//# sourceMappingURL=extension.js.map

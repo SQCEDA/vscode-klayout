@@ -1,14 +1,14 @@
 {
-    "name": "markdown-simple-rule-extension",
-    "displayName": "Markdown Simple Rule Extension",
-    "description": "add some simple rules, personal use",
-    "version": "0.0.7",
+    "name": "vscode-klayout",
+    "displayName": "vscode-klayout",
+    "description": "submit script to klayout python ide from vscode",
+    "version": "0.0.8",
     "publisher": "zhaouv",
     "repository": {
-        "url": "https://github.com/zhaouv/vscode-markdown-simple-rule-extension.git"
+        "url": "https://github.com/SQCEDA/vscode-klayout.git"
     },
     "bugs": {
-        "url": "https://github.com/zhaouv/vscode-markdown-simple-rule-extension/issues"
+        "url": "https://github.com/SQCEDA/vscode-klayout/issues"
     },
     "engines": {
         "vscode": "^1.1.6"
@@ -17,53 +17,53 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.insertFormattedTime",
-        "onLanguage:markdown"
+        "onCommand:extension.submitselectscript",
+        "onCommand:extension.submitcurrentfile"
     ],
     "main": "./out/extension",
     "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "Tick : Insert Formatted Time - Format",
-            "properties": {
-              "tick.format": {
-                "type": "string",
-                "default": "yyyyMMdd_HHmmss",
-                "description": "the format of inserted time"
-              }
-            }
-          },
         "commands": [
             {
-              "command": "extension.convertClassNameRule",
-              "title": "Convert ClassName Rule"
+            "command": "extension.submitselectscript",
+            "title": "submit selected content"
             },
             {
-              "command": "extension.replacePictureByBase64",
-              "title": "Replace Picture By Base64"
-            },
-            {
-              "command": "extension.insertFormattedTime",
-              "title": "Tick : Insert Formatted Time"
-            },
-            {
-              "command": "extension.insertFormattedTimeWeek",
-              "title": "Week : Insert Formatted Time"
+            "command": "extension.submitcurrentfile",
+            "title": "submit current file"
             }
-          ],
-          "markdown.markdownItPlugins": true
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "extension.submitselectscript",
+                    "when": "editorFocus",
+                    "group": "3_run"
+                },
+                {
+                    "command": "extension.submitcurrentfile",
+                    "when": "editorFocus",
+                    "group": "3_run"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "vscode-klayout",
+            "properties": {
+            "vscode-klayout.targetUrl": {
+                "type": "string",
+                "default": "http://127.0.0.1:12082/exec",
+                "description": "klayout service url"
+            }
+            }
+        }
     },
     "scripts": {
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+        "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.6.1",
         "vscode": "^1.1.6",
-        "tslint": "^5.8.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
+        "@types/node": "^7.0.43"
     }
 }
