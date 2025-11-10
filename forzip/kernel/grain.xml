@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<salt-grain>
+ <name>kernel</name>
+ <token/>
+ <hidden>false</hidden>
+ <version>0.0.9</version>
+ <api-version>0.28.17</api-version>
+ <title>kernel</title>
+ <doc>submit script to klayout python ide from vscode</doc>
+ <url>git+https://github.com/SQCEDA/vscode-klayout.git+klayout[v0.0.9]</url>
+ <license>MIT</license>
+ <author>zhaouv</author>
+ <author-contact>zhao.uv@gmail.com</author-contact>
+ <authored-time/>
+ <installed-time>2025-11-07T11:41:34</installed-time>
+</salt-grain>
