@@ -2,7 +2,7 @@
     "name": "vscode-klayout",
     "displayName": "vscode-klayout",
     "description": "submit script to klayout python ide from vscode",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "publisher": "zhaouv",
     "repository": {
         "url": "https://github.com/SQCEDA/vscode-klayout.git"
