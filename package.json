@@ -2,7 +2,7 @@
     "name": "vscode-klayout",
     "displayName": "vscode-klayout",
     "description": "submit script to klayout python ide from vscode",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "publisher": "zhaouv",
     "repository": {
         "url": "https://github.com/SQCEDA/vscode-klayout.git"
@@ -50,11 +50,16 @@
             "type": "object",
             "title": "vscode-klayout",
             "properties": {
-            "vscode-klayout.targetUrl": {
-                "type": "string",
-                "default": "http://127.0.0.1:12082/exec",
-                "description": "klayout service url"
-            }
+                "vscode-klayout.targetUrl": {
+                    "type": "string",
+                    "default": "http://127.0.0.1:12082/exec",
+                    "description": "klayout service url"
+                },
+                "vscode-klayout.pythonPath": {
+                    "type": "string",
+                    "default": "python",
+                    "description": "path to python for print output or error"
+                }
             }
         }
     },

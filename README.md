@@ -14,11 +14,15 @@
 
 可以为它们绑定快捷键, 在`键盘快捷方式(Ctrk+K Ctrl+S)`中搜索`submit`可以找到这两个命令并添加
 
-结果以及报错会打印在`输出(Ctrl+Shift+U) 的 Server`一栏中
+结果以及报错会打印在终端中(可能需要在设置中填写一个python路径)
 
 ## 设置
 
-搜索`targetUrl`可以指定klayout的服务地址. 默认是`http://127.0.0.1:12082/exec`
+搜索`klayout`可以找到相关设置. 
+
+`pythonPath`中填写一个python的路径用来打印结果. 默认是`python`, 正常情况下足以使用, 可以填写类似`c:\\path\\to\\python.exe`的完整路径. linux下填`python3`.
+
+`targetUrl`可以指定klayout的服务地址. 默认是`http://127.0.0.1:12082/exec`
 
 ## 自动启动server
 
